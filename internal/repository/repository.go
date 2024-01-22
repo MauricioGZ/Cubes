@@ -13,7 +13,7 @@ type Repository interface {
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	DeleteUserByEmail(ctx context.Context, email string) error
 	SaveCube(ctx context.Context, name, brand, shape, image string) error
-	GetCubes(ctx context.Context) ([]entity.Cube, error)
+	GetAllCubes(ctx context.Context, owned_by int64) ([]entity.Cube, error)
 }
 
 type repo struct {

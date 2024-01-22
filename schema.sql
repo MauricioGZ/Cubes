@@ -14,5 +14,7 @@ create table CUBES(
     name varchar(255) not null,
     brand varchar(255) not null,
     shape varchar(255) not null,
-    primary key(id)
+    owned_by int not null,
+    primary key(id),
+    foreign key(owned_by) references USERS(id)
 );
