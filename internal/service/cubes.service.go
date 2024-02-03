@@ -6,12 +6,8 @@ import (
 	"github.com/MauricioGZ/Cubes/internal/models"
 )
 
-func (s *serv) GetOwnedCubes(ctx context.Context, user *models.User) ([]models.Cube, error) {
-	if user != nil {
-		return nil, ErrInvalidCredentials
-	}
-
-	cubes, err := s.repo.GetAllCubes(ctx, user.ID)
+func (s *serv) GetOwnedCubes(ctx context.Context, email string) ([]models.Cube, error) {
+	cubes, err := s.repo.GetAllCubes(ctx, email)
 	var cubesModel []models.Cube
 
 	for _, cube := range cubes {
@@ -20,7 +16,6 @@ func (s *serv) GetOwnedCubes(ctx context.Context, user *models.User) ([]models.C
 			Name:  cube.Name,
 			Brand: cube.Brand,
 			Shape: cube.Shape,
-			Image: cube.Image,
 		})
 	}
 

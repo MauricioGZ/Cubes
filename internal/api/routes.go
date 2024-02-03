@@ -3,7 +3,9 @@ package api
 import "github.com/labstack/echo/v4"
 
 func (a *API) RegisterRoutes(e *echo.Echo) {
-	users := e.Group("/users")
-	users.POST("/register", a.RegisterUser)
-	users.GET("/login", a.LoginUser)
+	user := e.Group("/user")
+	cubes := e.Group("/cube")
+	user.POST("/register", a.RegisterUser)
+	user.POST("/login", a.LoginUser)
+	cubes.GET("", a.GetCubes)
 }

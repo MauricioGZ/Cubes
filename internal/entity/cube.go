@@ -5,6 +5,5 @@ type Cube struct {
 	Name    string `db:"name"`
 	Brand   string `db:"brand"`
 	Shape   string `db:"shape"`
-	Image   string `db:"image"`
 	OwnedBy int64  `db:"owned_by"`
 }
