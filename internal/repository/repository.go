@@ -12,8 +12,12 @@ type Repository interface {
 	SaveUser(ctx context.Context, email, name, password string) error
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	DeleteUserByEmail(ctx context.Context, email string) error
+
 	SaveCube(ctx context.Context, name, brand, shape, image string) error
+	DeleteCubeByID(ctx context.Context, id int64) error
 	GetAllCubes(ctx context.Context, email string) ([]entity.Cube, error)
+
+	SaveCubeToCollection(ctx context.Context, userID, cubeID int64) error
 }
 
 type repo struct {

@@ -75,17 +75,12 @@ func (a *API) LoginUser(c echo.Context) error {
 
 func (a *API) GetCubes(c echo.Context) error {
 	ctx := c.Request().Context()
-	cookie, err := c.Cookie("Authorization")
+
+	email, err := validateUser(c)
 	if err != nil {
-		log.Println(err)
-		return c.JSON(http.StatusUnauthorized, responseMessage{Message: "Unauthorized"})
+		return err
 	}
-	claims, err := encryption.ParseLoginJWT(cookie.Value)
-	if err != nil {
-		log.Println(err)
-		return c.JSON(http.StatusUnauthorized, responseMessage{Message: "Unauthorized"})
-	}
-	email := claims["email"].(string)
+
 	cubes, err := a.serv.GetOwnedCubes(ctx, email)
 	if err != nil {
 		if err == service.ErrInvalidCredentials {
@@ -93,5 +88,109 @@ func (a *API) GetCubes(c echo.Context) error {
 		}
 		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
 	}
+
 	return c.JSON(http.StatusOK, cubes)
+}
+
+func (a *API) AddCube(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	uParams := dtos.AddCube{}
+	if err := c.Bind(&uParams); err != nil {
+		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
+	}
+
+	err := a.serv.AddCube(
+		ctx,
+		uParams.Name,
+		uParams.Brand,
+		uParams.Shape,
+		uParams.Image,
+	)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responseMessage{Message: "Internal server error"})
+	}
+
+	return c.JSON(http.StatusOK, nil)
+}
+
+func (a *API) DeleteCube(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	email, err := validateUser(c)
+	if err != nil {
+		return err
+	}
+
+	cubes, err := a.serv.GetOwnedCubes(ctx, email)
+	if err != nil {
+		if err == service.ErrInvalidCredentials {
+			return c.JSON(http.StatusConflict, responseMessage{Message: "Invalid credentials"})
+		}
+		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
+	}
+
+	uParams := dtos.DeleteCube{}
+	if err := c.Bind(&uParams); err != nil {
+		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
+	}
+
+	deletedCube := false
+	for _, cube := range cubes {
+		if uParams.ID == cube.ID {
+			err = a.serv.DeleteCube(ctx, uParams.ID)
+			deletedCube = true
+			break
+		}
+	}
+
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
+	}
+
+	if !deletedCube {
+		return c.JSON(http.StatusNotFound, responseMessage{Message: "Cube not found"})
+	}
+
+	return c.JSON(http.StatusOK, responseMessage{Message: "Cube deleted"})
+}
+
+func (a *API) AddCubeToCollection(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	email, err := validateUser(c)
+	if err != nil {
+		return err
+	}
+
+	cParams := dtos.AddCubeToCollection{}
+	if err := c.Bind(&cParams); err != nil {
+		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
+	}
+
+	err = a.serv.AddCubeToCollection(ctx, email, cParams.CubeID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responseMessage{Message: "Internal server error"})
+	}
+
+	return c.JSON(http.StatusOK, nil)
+}
+
+func validateUser(c echo.Context) (string, error) {
+	cookie, err := c.Cookie("Authorization")
+	if err != nil {
+		log.Println(err)
+		return "", c.JSON(http.StatusUnauthorized, responseMessage{Message: "Unauthorized"})
+	}
+
+	claims, err := encryption.ParseLoginJWT(cookie.Value)
+	if err != nil {
+		log.Println(err)
+		return "", c.JSON(http.StatusUnauthorized, responseMessage{Message: "Unauthorized"})
+	}
+
+	email := claims["email"].(string)
+
+	return email, nil
 }

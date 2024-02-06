@@ -14,7 +14,15 @@ create table CUBES(
     name varchar(255) not null,
     brand varchar(255) not null,
     shape varchar(255) not null,
-    owned_by int not null,
-    primary key(id),
-    foreign key(owned_by) references USERS(id)
+    primary key(id)
+);
+
+create table OWNED_BY(
+    user_id int not null,
+    cube_id int not null,
+    owned_at date not null,
+    quantity int not null,
+    primary key(user_id,cube_id),
+    foreign key(user_id) references USERS(id),
+    foreign key(cube_id) references CUBES(id)
 );

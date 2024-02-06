@@ -10,7 +10,12 @@ import (
 type Service interface {
 	RegisterUser(ctx context.Context, email, name, password string) error
 	LoginUser(ctx context.Context, email, password string) (*models.User, error)
-	GetOwnedCubes(ctx context.Context, email string) ([]models.Cube, error)
+
+	AddCube(ctx context.Context, name, brand, shape, image string) error
+	DeleteCube(ctx context.Context, id int64) error
+	GetOwnedCubes(ctx context.Context, email string) ([]models.Cube, error) //TODO: refactor this
+
+	AddCubeToCollection(ctx context.Context, userEmail string, cubeID int64) error
 }
 
 type serv struct {
