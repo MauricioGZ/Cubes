@@ -10,9 +10,10 @@ func (a *API) RegisterRoutes(e *echo.Echo) {
 	user.POST("/register", a.RegisterUser)
 	user.POST("/login", a.LoginUser)
 
-	cubes.GET("", a.GetCubes)             //TODO: refactor this
-	cubes.DELETE("/delete", a.DeleteCube) //TODO: refactor this
+	cubes.POST("/add", a.AddCube)
+	//cubes.DELETE("/delete", a.DeleteCube) //TODO: refactor this or implement a soft delete to avoid problems
 
+	collection.GET("", a.GetCubesCollection) //TODO: refactor this
 	collection.POST("/add", a.AddCubeToCollection)
 	collection.DELETE("/remove", a.RemoveCubeFromCollection)
 }

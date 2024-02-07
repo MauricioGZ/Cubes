@@ -8,5 +8,5 @@ type AddCube struct {
 }
 
 type DeleteCube struct {
-	ID int64 `json:"id"`
+	ID int64 `json:"cube_id"`
 }

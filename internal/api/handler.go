@@ -74,7 +74,7 @@ func (a *API) LoginUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, responseMessage{Message: "Welcome " + user.Name})
 }
 
-func (a *API) GetCubes(c echo.Context) error {
+func (a *API) GetCubesCollection(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	email, err := validateUser(c)
@@ -98,17 +98,23 @@ func (a *API) GetCubes(c echo.Context) error {
 func (a *API) AddCube(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	uParams := dtos.AddCube{}
-	if err := c.Bind(&uParams); err != nil {
+	email, err := validateUser(c)
+	if err != nil {
+		return err
+	}
+
+	cParams := dtos.AddCube{}
+	if err := c.Bind(&cParams); err != nil {
 		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
 	}
 
-	err := a.serv.AddCube(
+	err = a.serv.AddCube(
 		ctx,
-		uParams.Name,
-		uParams.Brand,
-		uParams.Shape,
-		uParams.Image,
+		email,
+		cParams.Name,
+		cParams.Brand,
+		cParams.Shape,
+		cParams.Image,
 	)
 
 	if err != nil {
@@ -126,34 +132,15 @@ func (a *API) DeleteCube(c echo.Context) error {
 		return err
 	}
 
-	cubes, err := a.serv.GetOwnedCubes(ctx, email)
-	if err != nil {
-		if err == service.ErrInvalidCredentials {
-			return c.JSON(http.StatusConflict, responseMessage{Message: "Invalid credentials"})
-		}
+	cParams := dtos.DeleteCube{}
+	if err := c.Bind(&cParams); err != nil {
 		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
 	}
 
-	uParams := dtos.DeleteCube{}
-	if err := c.Bind(&uParams); err != nil {
-		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
-	}
-
-	deletedCube := false
-	for _, cube := range cubes {
-		if uParams.ID == cube.ID {
-			err = a.serv.DeleteCube(ctx, uParams.ID)
-			deletedCube = true
-			break
-		}
-	}
-
+	err = a.serv.DeleteCube(ctx, email, cParams.ID)
+	fmt.Println(err)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
-	}
-
-	if !deletedCube {
-		return c.JSON(http.StatusNotFound, responseMessage{Message: "Cube not found"})
 	}
 
 	return c.JSON(http.StatusOK, responseMessage{Message: "Cube deleted"})

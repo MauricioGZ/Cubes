@@ -13,13 +13,12 @@ var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 )
 
-func (s *serv) RegisterUser(ctx context.Context, email, name, password string) error {
+func (s *serv) RegisterUser(ctx context.Context, userEmail, name, password string) error {
 
-	user, _ := s.repo.GetUserByEmail(ctx, email)
+	user, _ := s.repo.GetUserByEmail(ctx, userEmail)
 	if user != nil {
 		return ErrUserAlreadyExists
 	}
-
 	bb, err := encryption.Encrypt([]byte(password))
 
 	if err != nil {
@@ -28,14 +27,14 @@ func (s *serv) RegisterUser(ctx context.Context, email, name, password string) e
 
 	encryptedPass := encryption.ToBase64(bb)
 
-	s.repo.SaveUser(ctx, email, name, encryptedPass)
+	s.repo.SaveUser(ctx, userEmail, name, encryptedPass)
 
 	return nil
 }
 
-func (s *serv) LoginUser(ctx context.Context, email, password string) (*models.User, error) {
+func (s *serv) LoginUser(ctx context.Context, userEmail, password string) (*models.User, error) {
 
-	user, err := s.repo.GetUserByEmail(ctx, email)
+	user, err := s.repo.GetUserByEmail(ctx, userEmail)
 	if err != nil {
 		return nil, err
 	}

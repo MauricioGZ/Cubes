@@ -10,6 +10,7 @@ const (
 )
 
 func (r *repo) SaveCube(ctx context.Context, name, brand, shape, image string) error {
+	//TODO: implement the image (AWS for example)
 	_, err := r.db.ExecContext(ctx, qryInsertCube, name, brand, shape)
 	return err
 }

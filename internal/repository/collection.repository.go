@@ -10,19 +10,19 @@ import (
 )
 
 const (
-	qryInsertCubeToCollection = `insert into OWNED_BY (user_id,cube_id,owned_at,quantity) values(?,?,?,?);`
-	qryGetAllCubes            = `select CUBES.*, OWNED_BY.owned_at, OWNED_BY.quantity
-									from OWNED_BY
-									join CUBES on OWNED_BY.cube_id = CUBES.id
-									join USERS on OWNED_BY.user_id = USERS.id
+	qryInsertCubeToCollection = `insert into COLLECTION (user_id,cube_id,owned_at,quantity) values(?,?,?,?);`
+	qryGetAllCubes            = `select CUBES.*, COLLECTION.owned_at, COLLECTION.quantity
+									from COLLECTION
+									join CUBES on COLLECTION.cube_id = CUBES.id
+									join USERS on COLLECTION.user_id = USERS.id
 									where USERS.email = ?;`
-	qryGetCubeFromCollectionByID = `select CUBES.*, OWNED_BY.owned_at, OWNED_BY.quantity
-										from OWNED_BY
-										join CUBES on OWNED_BY.cube_id = CUBES.id
-										join USERS on OWNED_BY.user_id = USERS.id
-										where USERS.email = ? and OWNED_BY.cube_id = ?;`
-	qryDeleteCubeFromCollectionByID = `delete from OWNED_BY where user_id = ? and cube_id = ?;`
-	qryGetPrimeryKyByUserID         = `select user_id, cube_id from OWNED_BY where user_id = ?;`
+	qryGetCubeFromCollectionByID = `select CUBES.*, COLLECTION.owned_at, COLLECTION.quantity
+										from COLLECTION
+										join CUBES on COLLECTION.cube_id = CUBES.id
+										join USERS on COLLECTION.user_id = USERS.id
+										where USERS.email = ? and COLLECTION.cube_id = ?;`
+	qryDeleteCubeFromCollectionByID = `delete from COLLECTION where user_id = ? and cube_id = ?;`
+	qryGetPrimeryKyByUserID         = `select user_id, cube_id from COLLECTION where user_id = ?;`
 )
 
 var (
