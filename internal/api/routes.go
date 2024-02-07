@@ -14,4 +14,5 @@ func (a *API) RegisterRoutes(e *echo.Echo) {
 	cubes.DELETE("/delete", a.DeleteCube) //TODO: refactor this
 
 	collection.POST("/add", a.AddCubeToCollection)
+	collection.DELETE("/remove", a.RemoveCubeFromCollection)
 }

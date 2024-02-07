@@ -7,6 +7,6 @@ type AddCube struct {
 	Image string `json:"image"`
 }
 
-type AddCubeToCollection struct {
-	CubeID int64 `json:"cube_id"`
+type DeleteCube struct {
+	ID int64 `json:"id"`
 }

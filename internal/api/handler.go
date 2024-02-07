@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -78,11 +79,13 @@ func (a *API) GetCubes(c echo.Context) error {
 
 	email, err := validateUser(c)
 	if err != nil {
+		fmt.Println(err)
 		return err
 	}
 
 	cubes, err := a.serv.GetOwnedCubes(ctx, email)
 	if err != nil {
+		fmt.Println(err)
 		if err == service.ErrInvalidCredentials {
 			return c.JSON(http.StatusConflict, responseMessage{Message: "Invalid credentials"})
 		}
@@ -170,6 +173,30 @@ func (a *API) AddCubeToCollection(c echo.Context) error {
 	}
 
 	err = a.serv.AddCubeToCollection(ctx, email, cParams.CubeID)
+	if err != nil {
+		if err == service.ErrCubeAlreadyInCollection {
+			return c.JSON(http.StatusBadRequest, responseMessage{Message: err.Error()})
+		}
+		return c.JSON(http.StatusInternalServerError, responseMessage{Message: "Internal server error"})
+	}
+
+	return c.JSON(http.StatusOK, nil)
+}
+
+func (a *API) RemoveCubeFromCollection(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	email, err := validateUser(c)
+	if err != nil {
+		return err
+	}
+
+	cParams := dtos.RemoveCubeFromCollection{}
+	if err := c.Bind(&cParams); err != nil {
+		return c.JSON(http.StatusBadRequest, responseMessage{Message: "Invalid request"})
+	}
+
+	err = a.serv.RemoveCubeFromCollection(ctx, email, cParams.CubeID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responseMessage{Message: "Internal server error"})
 	}

@@ -15,9 +15,12 @@ type Repository interface {
 
 	SaveCube(ctx context.Context, name, brand, shape, image string) error
 	DeleteCubeByID(ctx context.Context, id int64) error
-	GetAllCubes(ctx context.Context, email string) ([]entity.Cube, error)
 
-	SaveCubeToCollection(ctx context.Context, userID, cubeID int64) error
+	GetCollectionByUserID(ctx context.Context, userID int64) ([]entity.ColelctionPrimaryKey, error)
+	SaveItemToCollection(ctx context.Context, userID, cubeID int64) error
+	GetItemsFromCollection(ctx context.Context, email string) ([]entity.Collection, error)
+	GetFromCollectionByItemID(ctx context.Context, email string, cubeID int64) (*entity.Collection, error)
+	DeleteFromCollectionByItemID(ctx context.Context, userID, cubeID int64) error
 }
 
 type repo struct {
