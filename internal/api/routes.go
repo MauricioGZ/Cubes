@@ -10,16 +10,16 @@ func (a *API) RegisterRoutes(e *echo.Echo) {
 	collection := e.Group("/collection")
 
 	user.GET("/register", func(c echo.Context) error {
-		return c.File("signup.html")
+		return c.File("public/signup.html")
 	})
 	user.POST("/register", a.RegisterUser)
 	user.GET("/login", func(c echo.Context) error {
-		return c.File("login.html")
+		return c.File("public/login.html")
 	})
 	user.POST("/login", a.LoginUser)
 
 	cubes.GET("/add", func(c echo.Context) error {
-		return c.File("addCube.html")
+		return c.File("public/addCube.html")
 	})
 	cubes.POST("/add", a.AddCube)
 	//cubes.DELETE("/delete", a.DeleteCube) //TODO: refactor this or implement a soft delete to avoid problems
