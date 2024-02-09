@@ -1,10 +1,9 @@
 package dtos
 
 type AddCube struct {
-	Name  string `json:"name"`
-	Brand string `json:"brand"`
-	Shape string `json:"shape"`
-	Image string `json:"image"`
+	Name  string `form:"name"`
+	Brand string `form:"brand"`
+	Shape string `form:"shape"`
 }
 
 type DeleteCube struct {

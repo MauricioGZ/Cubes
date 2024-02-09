@@ -13,6 +13,10 @@ type API struct {
 	dataValidator *validator.Validate
 }
 
+type responseMessage struct {
+	Message string `json:"message"`
+}
+
 func New(_serv service.Service) *API {
 	return &API{
 		serv:          _serv,

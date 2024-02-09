@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <title>Add new cube</title>
+    </head>
+    <body>
+        <h1>Add New Cube</h1>
+        <form method="POST" action="/cube/add" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td><label htmlFor="name">Name</label></td>
+                    <td><input type="text" name="name"/></td>
+                </tr>
+                <tr>
+                    <td><label htmlFor="brand">Brand</label></td>
+                    <td><input type="text" name="brand"/></td>
+                </tr>
+                <tr>
+                    <td><label htmlFor="shape">Shape</label></td>
+                    <td><input type="text" name="shape"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="file" name="image"/></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><input type="submit" value="Add"></td>
+                </tr>
+            </table>
+        </form>
+    </body>
+</html>

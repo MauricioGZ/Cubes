@@ -5,13 +5,13 @@ import (
 )
 
 const (
-	qryInsertCube     = `insert into CUBES (name,brand,shape) values(?,?,?);`
+	qryInsertCube     = `insert into CUBES (name,brand,shape,image) values(?,?,?,?);`
 	qryDeleteCubeByID = `delete from CUBES where id = ?;`
 )
 
 func (r *repo) SaveCube(ctx context.Context, name, brand, shape, image string) error {
 	//TODO: implement the image (AWS for example)
-	_, err := r.db.ExecContext(ctx, qryInsertCube, name, brand, shape)
+	_, err := r.db.ExecContext(ctx, qryInsertCube, name, brand, shape, image)
 	return err
 }
 
