@@ -5,10 +5,6 @@ import (
 )
 
 func (a *API) RegisterRoutes(e *echo.Echo) {
-	e.GET("/", func(c echo.Context) error {
-		return c.File("index.html")
-	})
-
 	user := e.Group("/user")
 	cubes := e.Group("/cube")
 	collection := e.Group("/collection")
